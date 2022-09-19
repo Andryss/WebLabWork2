@@ -1,19 +1,37 @@
 "use strict"
 
-const cookieImage = $("#cookieImage");
-const xField = $("input:radio[name='xValue']");
-const yField = $("input:text[name='yValue']");
-const rTextField = $("#rTextField");
-const submitForm = $("#submitForm");
-const historyTableContent = $("#historyTableContent");
+/**
+ * @type {NodeListOf<HTMLInputElement>}
+ */
+const xField = document.getElementsByName("xValue");
+/**
+ * @type {NodeListOf<HTMLInputElement>}
+ */
+const yField = document.getElementsByName("yValue");
+/**
+ * @type {NodeListOf<HTMLInputElement>}
+ */
+const rField = document.getElementsByName("rValue");
+/**
+ * @type {HTMLFormElement}
+ */
+const submitForm = document.getElementById("submitForm");
+/**
+ * @type {HTMLTableSectionElement}
+ */
+const historyTableContent = document.getElementById("historyTableContent");
+
+const numberPattern = /^((-?[1-9]\d*(\.\d+)?)|(0(\.\d+)?)|(-0\.\d+))$/
+
+
 
 // TODO: delete function for tests
-submitForm.on("submit", function (event) {
+submitForm.onsubmit = function (event) {
     event.preventDefault();
-    for (const elem of $("input[name=xValue]:checked")) {
+    for (const elem of rField) {
         alert(elem.value)
     }
-})
+}
 
 
 initializeFields()
@@ -27,91 +45,175 @@ function initializeFields() {
 
 
 function initializeXField() {
-    // TODO: implement
+    xField.forEach(value => {
+        value.onchange = (() => validateXField())
+    });
 }
 
+/**
+ * @return {null|number}
+ */
 function getXValue() {
-    // TODO: implement
+    if (validateXField()) {
+        // now is the only one selected radio with number
+        for (let elem of xField) {
+            if (elem.checked) return parseFloat(elem.value);
+        }
+        return null;
+    }
+    return null;
 }
 
+/**
+ * @return {boolean}
+ */
 function validateXField() {
     return validateNumberRadioField(xField);
 }
 
+/**
+ * @param {NodeListOf<HTMLInputElement>} radioButtons
+ * @returns {boolean}
+ */
 function validateNumberRadioField(radioButtons) {
     if (isNotSelected(radioButtons)) return false;
     if (isNotNumberSelected(radioButtons)) return false;
-    // TODO: complete this one
+    makeValid(radioButtons[0].parentElement); return true;
 }
 
+/**
+ * @param {NodeListOf<HTMLInputElement>} radioButtons
+ * @return {boolean}
+ */
 function isNotSelected(radioButtons) {
-    // TODO: implement
+    if (isSelectedCountInRange(radioButtons, 0, 0)) {
+        makeInvalid(radioButtons[0].parentElement);
+        radioButtons.forEach(value => value.classList.add("not-selected"));
+        return true;
+    } else {
+        radioButtons.forEach(value => value.classList.remove("not-selected"));
+        return false
+    }
 }
 
+/**
+ * @param {NodeListOf<HTMLInputElement>} radioButtons
+ * @param {Number} low
+ * @param {Number} high
+ * @return {boolean}
+ */
+function isSelectedCountInRange(radioButtons, low = null, high = null) {
+    console.assert(low != null || high != null);
+    if (low != null && high != null) console.assert(low <= high);
+    let count = 0;
+    radioButtons.forEach(value => { if (value.checked) count++ });
+    return !(low != null && count < low || high != null && count > high);
+}
+
+/**
+ * @param {NodeListOf<HTMLInputElement>} radioButtons
+ * @return {boolean}
+ */
 function isNotNumberSelected(radioButtons) {
-    // TODO: implement
+    let onlyNumberSelect = true;
+    for (const elem of radioButtons) {
+        if (elem.checked && !(numberPattern.test(elem.value))) {
+            onlyNumberSelect = false; break;
+        }
+    }
+    if (!onlyNumberSelect) {
+        makeInvalid(radioButtons[0].parentElement);
+        radioButtons.forEach(value => value.classList.add("not-a-number-selected"));
+        return true;
+    } else {
+        radioButtons.forEach(value => value.classList.remove("not-a-number-selected"));
+        return false
+    }
 }
 
 
-
-const numberPattern = /^((-?[1-9]\d*(\.\d+)?)|(0(\.\d+)?)|(-0\.\d+))$/
 
 function initializeYField() {
-    ["keyup", "keydown"].forEach(function (event) {
-        yField.on(event, function () { validateYField() })
+    yField.forEach(element => {
+        element.onkeyup = (() => validateYField());
+        element.onkeydown = (() => validateYField());
     })
 }
 
+/**
+ * @return {number|null}
+ */
 function getYValue() {
     if (validateYField()) {
-        return parseFloat(yField.val())
+        return parseFloat(yField[0].value);
     }
-    return null
+    return null;
 }
 
 function validateYField() {
-    return validateNumberTextField(yField, -3, 3);
+    return validateNumberTextField(yField[0], -3, 3);
 }
 
+/**
+ * @param {HTMLInputElement} textField
+ * @param {Number} low
+ * @param {Number} high
+ * @returns {boolean}
+ */
 function validateNumberTextField(textField, low = null, high = null) {
     if (isBlank(textField)) return false;
     if (isNotNumber(textField)) return false;
     if (isNotInRange(textField,low,high)) return false;
-    makeValid(textField.parent()); return true;
+    makeValid(textField.parentElement); return true;
 }
 
+/**
+ * @param {HTMLInputElement} textField
+ * @returns {boolean}
+ */
 function isBlank(textField) {
-    if (textField.val() === "") {
-        makeInvalid(textField.parent());
-        textField.addClass("blank");
+    if (textField.value === "") {
+        makeInvalid(textField.parentElement);
+        textField.classList.add("blank");
         return true;
     } else {
-        textField.removeClass("blank");
+        textField.classList.remove("blank");
         return false;
     }
 }
 
+/**
+ * @param {HTMLInputElement} textField
+ * @returns {boolean}
+ */
 function isNotNumber(textField) {
-    if (!numberPattern.test(textField.val())) {
-        makeInvalid(textField.parent());
-        textField.addClass("not-a-number");
+    if (!numberPattern.test(textField.value)) {
+        makeInvalid(textField.parentElement);
+        textField.classList.add("not-a-number");
         return true;
     } else {
-        textField.removeClass("not-a-number");
+        textField.classList.remove("not-a-number");
         return false;
     }
 }
 
+/**
+ * @param {HTMLInputElement} textField
+ * @param {Number} low
+ * @param {Number} high
+ * @returns {boolean}
+ */
 function isNotInRange(textField, low = null, high = null) {
     console.assert(low != null || high != null);
     if (low != null && high != null) console.assert(low <= high);
-    const value = parseFloat(textField.val());
+    const value = parseFloat(textField.value);
     console.assert(!isNaN(value));
     if (low && value < low || high && value > high) {
-        makeInvalid(textField.parent());
-        textField.addClass("out-of-range");return true;
+        makeInvalid(textField.parentElement);
+        textField.classList.add("out-of-range");
+        return true;
     } else {
-        textField.removeClass("out-of-range");
+        textField.classList.remove("out-of-range");
         return false;
     }
 }
@@ -119,27 +221,73 @@ function isNotInRange(textField, low = null, high = null) {
 
 
 function initializeRField() {
-    // TODO: implement
+    rField.forEach(value => {
+        value.onchange = (() => {
+            drawPlotOnCanvas(getRValue())
+        })
+    })
 }
 
+/**
+ * @return {null|number}
+ */
 function getRValue() {
-    // TODO: implement
+    if (validateRField()) {
+        for (const elem of rField) {
+            if (elem.checked) return parseFloat(elem.value);
+        }
+        return null;
+    }
+    return null;
 }
 
+/**
+ * @return {boolean}
+ */
 function validateRField() {
-    // TODO: implement
+    return validateNumberCheckboxField(rField);
 }
 
+/**
+ * @param {NodeListOf<HTMLInputElement>} checkBoxes
+ * @return {boolean}
+ */
+function validateNumberCheckboxField(checkBoxes) {
+    if (isNotSelected(checkBoxes)) return false; // the same as for radio button
+    if (isNotNumberSelected(checkBoxes)) return false; // the same as for radio button
+    if (isMoreThenOneSelected(checkBoxes)) return false;
+    makeValid(checkBoxes[0].parentElement); return true;
+}
 
+/**
+ * @param {NodeListOf<HTMLInputElement>} checkBoxes
+ * @return {boolean}
+ */
+function isMoreThenOneSelected(checkBoxes) {
+    if (isSelectedCountInRange(checkBoxes, 2)) {
+        makeInvalid(checkBoxes[0].parentElement);
+        checkBoxes.forEach(value => value.classList.add("more-then-one-selected"));
+        return true;
+    } else {
+        checkBoxes.forEach(value => value.classList.remove("more-then-one-selected"));
+        return false
+    }
+}
 
+/**
+ * @param {HTMLElement} paragraph
+ */
 function makeInvalid(paragraph) {
-    paragraph.removeClass("valid");
-    paragraph.addClass("invalid");
+    paragraph.classList.add("valid");
+    paragraph.classList.remove("invalid");
 }
 
+/**
+ * @param {HTMLElement} paragraph
+ */
 function makeValid(paragraph) {
-    paragraph.removeClass("invalid")
-    paragraph.addClass("valid");
+    paragraph.classList.add("invalid");
+    paragraph.classList.remove("valid");
 }
 
 //
@@ -227,8 +375,11 @@ function makeValid(paragraph) {
 //     rTextField.removeClass("valid");
 // }
 
-drawPlotOnCanvas(-1);
+drawPlotOnCanvas(null);
 
+/**
+ * @param {number|null} rValue
+ */
 function drawPlotOnCanvas(rValue) {
     const canvas = document.getElementById("plotCanvas");
     const {width, height} = canvas.getBoundingClientRect();
@@ -255,6 +406,8 @@ function drawPlotOnCanvas(rValue) {
         yHorizontalOffset = 1.2 * arrowLength;
     if (canvas.getContext) {
         const ctx = canvas.getContext("2d");
+
+        ctx.clearRect(0,0,width,height);
 
         // ctx.strokeRect(0,0,width,height);
 
@@ -336,10 +489,11 @@ function drawPlotOnCanvas(rValue) {
     }
 }
 
-cookieImage.on("click", function () {
-    if (Math.random() > 0.05) {
+
+document.getElementById("cookieImage").onclick = function () {
+    if (Math.random() > 0.2) {
         alert("This site uses cookies, but you are not asked :>");
     } else {
         alert("Don't crumble your cookies here!");
     }
-})
+}
