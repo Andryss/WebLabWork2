@@ -77,12 +77,12 @@ function validateNumberTextField(textField, low = null, high = null) {
     if (isBlank(textField)) return false;
     if (isNotNumber(textField)) return false;
     if (isNotInRange(textField,low,high)) return false;
-    makeValid(textField); return true;
+    makeValid(textField.parent()); return true;
 }
 
 function isBlank(textField) {
     if (textField.val() === "") {
-        makeInvalid(textField);
+        makeInvalid(textField.parent());
         textField.addClass("blank");
         return true;
     } else {
@@ -93,7 +93,7 @@ function isBlank(textField) {
 
 function isNotNumber(textField) {
     if (!numberPattern.test(textField.val())) {
-        makeInvalid(textField);
+        makeInvalid(textField.parent());
         textField.addClass("not-a-number");
         return true;
     } else {
@@ -108,24 +108,12 @@ function isNotInRange(textField, low = null, high = null) {
     const value = parseFloat(textField.val());
     console.assert(!isNaN(value));
     if (low && value < low || high && value > high) {
-        makeInvalid(textField);
+        makeInvalid(textField.parent());
         textField.addClass("out-of-range");return true;
     } else {
         textField.removeClass("out-of-range");
         return false;
     }
-}
-
-function makeInvalid(textField) {
-    // TODO: make makeInvalid affect to <p>
-    textField.removeClass("valid");
-    textField.addClass("invalid");
-}
-
-function makeValid(textField) {
-    // TODO: make makeValid affect to <p>
-    textField.removeClass("invalid")
-    textField.addClass("valid");
 }
 
 
@@ -140,6 +128,18 @@ function getRValue() {
 
 function validateRField() {
     // TODO: implement
+}
+
+
+
+function makeInvalid(paragraph) {
+    paragraph.removeClass("valid");
+    paragraph.addClass("invalid");
+}
+
+function makeValid(paragraph) {
+    paragraph.removeClass("invalid")
+    paragraph.addClass("valid");
 }
 
 //
@@ -230,7 +230,6 @@ function validateRField() {
 drawPlotOnCanvas(-1);
 
 function drawPlotOnCanvas(rValue) {
-    const rValueHalf = rValue / 2;
     const canvas = document.getElementById("plotCanvas");
     const {width, height} = canvas.getBoundingClientRect();
     if (width !== height) {
@@ -259,7 +258,9 @@ function drawPlotOnCanvas(rValue) {
 
         // ctx.strokeRect(0,0,width,height);
 
-        if (rValue > 0) {
+        if (rValue && rValue > 0) {
+            const rValueHalf = rValue / 2;
+
             ctx.fillStyle = "lightblue";
             // area
             ctx.beginPath();
