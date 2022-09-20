@@ -28,9 +28,7 @@ const numberPattern = /^((-?[1-9]\d*(\.\d+)?)|(0(\.\d+)?)|(-0\.\d+))$/
 // TODO: delete function for tests
 submitForm.onsubmit = function (event) {
     event.preventDefault();
-    for (const elem of rField) {
-        alert(elem.value)
-    }
+    validateFields();
 }
 
 
@@ -42,11 +40,17 @@ function initializeFields() {
     initializeRField();
 }
 
+function validateFields() {
+    validateXField();
+    validateYField();
+    validateRField();
+}
+
 
 
 function initializeXField() {
     xField.forEach(value => {
-        value.onchange = (() => validateXField())
+        value.onchange = (() => { validateXField() })
     });
 }
 
@@ -88,10 +92,10 @@ function validateNumberRadioField(radioButtons) {
 function isNotSelected(radioButtons) {
     if (isSelectedCountInRange(radioButtons, 0, 0)) {
         makeInvalid(radioButtons[0].parentElement);
-        radioButtons.forEach(value => value.classList.add("not-selected"));
+        radioButtons[0].parentElement.classList.add("not-selected");
         return true;
     } else {
-        radioButtons.forEach(value => value.classList.remove("not-selected"));
+        radioButtons[0].parentElement.classList.remove("not-selected");
         return false
     }
 }
@@ -123,10 +127,10 @@ function isNotNumberSelected(radioButtons) {
     }
     if (!onlyNumberSelect) {
         makeInvalid(radioButtons[0].parentElement);
-        radioButtons.forEach(value => value.classList.add("not-a-number-selected"));
+        radioButtons[0].parentElement.classList.add("not-a-number-selected");
         return true;
     } else {
-        radioButtons.forEach(value => value.classList.remove("not-a-number-selected"));
+        radioButtons[0].parentElement.classList.remove("not-a-number-selected");
         return false
     }
 }
@@ -135,8 +139,8 @@ function isNotNumberSelected(radioButtons) {
 
 function initializeYField() {
     yField.forEach(element => {
-        element.onkeyup = (() => validateYField());
-        element.onkeydown = (() => validateYField());
+        element.onkeyup = (() => { validateYField() });
+        element.onkeydown = (() => { validateYField() });
     })
 }
 
@@ -150,6 +154,9 @@ function getYValue() {
     return null;
 }
 
+/**
+ * @return {boolean}
+ */
 function validateYField() {
     return validateNumberTextField(yField[0], -3, 3);
 }
@@ -174,10 +181,10 @@ function validateNumberTextField(textField, low = null, high = null) {
 function isBlank(textField) {
     if (textField.value === "") {
         makeInvalid(textField.parentElement);
-        textField.classList.add("blank");
+        textField.parentElement.classList.add("blank");
         return true;
     } else {
-        textField.classList.remove("blank");
+        textField.parentElement.classList.remove("blank");
         return false;
     }
 }
@@ -189,10 +196,10 @@ function isBlank(textField) {
 function isNotNumber(textField) {
     if (!numberPattern.test(textField.value)) {
         makeInvalid(textField.parentElement);
-        textField.classList.add("not-a-number");
+        textField.parentElement.classList.add("not-a-number-entered");
         return true;
     } else {
-        textField.classList.remove("not-a-number");
+        textField.parentElement.classList.remove("not-a-number-entered");
         return false;
     }
 }
@@ -210,10 +217,10 @@ function isNotInRange(textField, low = null, high = null) {
     console.assert(!isNaN(value));
     if (low && value < low || high && value > high) {
         makeInvalid(textField.parentElement);
-        textField.classList.add("out-of-range");
+        textField.parentElement.classList.add("out-of-range");
         return true;
     } else {
-        textField.classList.remove("out-of-range");
+        textField.parentElement.classList.remove("out-of-range");
         return false;
     }
 }
@@ -222,9 +229,7 @@ function isNotInRange(textField, low = null, high = null) {
 
 function initializeRField() {
     rField.forEach(value => {
-        value.onchange = (() => {
-            drawPlotOnCanvas(getRValue())
-        })
+        value.onchange = (() => { drawPlotOnCanvas(getRValue()) })
     })
 }
 
@@ -266,10 +271,10 @@ function validateNumberCheckboxField(checkBoxes) {
 function isMoreThenOneSelected(checkBoxes) {
     if (isSelectedCountInRange(checkBoxes, 2)) {
         makeInvalid(checkBoxes[0].parentElement);
-        checkBoxes.forEach(value => value.classList.add("more-then-one-selected"));
+        checkBoxes[0].parentElement.classList.add("more-then-one-selected");
         return true;
     } else {
-        checkBoxes.forEach(value => value.classList.remove("more-then-one-selected"));
+        checkBoxes[0].parentElement.classList.remove("more-then-one-selected");
         return false
     }
 }
@@ -278,16 +283,16 @@ function isMoreThenOneSelected(checkBoxes) {
  * @param {HTMLElement} paragraph
  */
 function makeInvalid(paragraph) {
-    paragraph.classList.add("valid");
-    paragraph.classList.remove("invalid");
+    paragraph.classList.add("invalid");
+    paragraph.classList.remove("valid");
 }
 
 /**
  * @param {HTMLElement} paragraph
  */
 function makeValid(paragraph) {
-    paragraph.classList.add("invalid");
-    paragraph.classList.remove("valid");
+    paragraph.classList.add("valid");
+    paragraph.classList.remove("invalid");
 }
 
 //
