@@ -3,15 +3,9 @@
 /**
  * @type {NodeListOf<HTMLInputElement>}
  */
-const xField = document.getElementsByName("xValue");
-/**
- * @type {NodeListOf<HTMLInputElement>}
- */
-const yField = document.getElementsByName("yValue");
-/**
- * @type {NodeListOf<HTMLInputElement>}
- */
-const rField = document.getElementsByName("rValue");
+const xField = document.getElementsByName("xValue"),
+    yField = document.getElementsByName("yValue"),
+    rField = document.getElementsByName("rValue");
 /**
  * @type {HTMLFormElement}
  */
@@ -23,12 +17,25 @@ const historyTableContent = document.getElementById("historyTableContent");
 
 const numberPattern = /^((-?[1-9]\d*(\.\d+)?)|(0(\.\d+)?)|(-0\.\d+))$/
 
+/**
+ * @type {boolean}
+ */
+let xValid = false,
+    yValid = false,
+    rValid = false;
 
 
-// TODO: delete function for tests
+
 submitForm.onsubmit = function (event) {
     event.preventDefault();
-    validateFields();
+    if (validateFields()) {
+        sendRequestToServer(
+            validateAndGetXOrNull(),
+            validateAndGetYOrNull(),
+            validateAndGetROrNull()
+        );
+        clearFields();
+    }
 }
 
 
@@ -40,39 +47,79 @@ function initializeFields() {
     initializeRField();
 }
 
+/**
+ * @return {boolean}
+ */
 function validateFields() {
-    validateXField();
-    validateYField();
-    validateRField();
+    let valid = false;
+    valid = validateXField() && valid;
+    valid = validateYField() && valid;
+    valid = validateRField() && valid;
+    return valid;
+}
+
+function clearFields() {
+    clearXField();
+    clearYField();
+    clearRField();
+    drawPlotOnCanvas(null);
 }
 
 
 
 function initializeXField() {
     xField.forEach(value => {
-        value.onchange = (() => { validateXField() })
+        value.onmousedown = () => {
+            if (value.checked) {
+                const unbind = () => {
+                    value.onmouseup = () => {}
+                }
+                value.onmouseup = () => {
+                    setTimeout(() => {value.checked = false}, 0)
+                    unbind();
+                }
+                value.onmouseout = unbind
+            }
+        }
+        value.onclick = () => {
+            setTimeout(() => {
+                validateXField()
+            }, 0)
+        }
     });
 }
 
 /**
  * @return {null|number}
  */
-function getXValue() {
-    if (validateXField()) {
-        // now is the only one selected radio with number
-        for (let elem of xField) {
-            if (elem.checked) return parseFloat(elem.value);
-        }
-        return null;
+function validateAndGetXOrNull() {
+    validateXField()
+    return getXOrNull();
+}
+
+/**
+ * @return {null|number}
+ */
+function getXOrNull() {
+    if (!xValid) return null;
+    for (let elem of xField) {
+        if (elem.checked) return parseFloat(elem.value);
     }
     return null;
+}
+
+function clearXField() {
+    xField.forEach(value => value.checked = false)
+    xField[0].parentElement.classList.remove("valid")
+    xValid = false;
 }
 
 /**
  * @return {boolean}
  */
 function validateXField() {
-    return validateNumberRadioField(xField);
+    xValid = validateNumberRadioField(xField)
+    return xValid;
 }
 
 /**
@@ -147,18 +194,31 @@ function initializeYField() {
 /**
  * @return {number|null}
  */
-function getYValue() {
-    if (validateYField()) {
-        return parseFloat(yField[0].value);
-    }
-    return null;
+function validateAndGetYOrNull() {
+    validateYField();
+    return getYOrNull();
+}
+
+/**
+ * @return {null|number}
+ */
+function getYOrNull() {
+    if (!yValid) return null;
+    return parseFloat(yField[0].value);
+}
+
+function clearYField() {
+    yField.forEach(value => value.value = "")
+    yField[0].parentElement.classList.remove("valid")
+    yValid = false;
 }
 
 /**
  * @return {boolean}
  */
 function validateYField() {
-    return validateNumberTextField(yField[0], -3, 3);
+    yValid = validateNumberTextField(yField[0], -5, 3);
+    return yValid;
 }
 
 /**
@@ -229,28 +289,41 @@ function isNotInRange(textField, low = null, high = null) {
 
 function initializeRField() {
     rField.forEach(value => {
-        value.onchange = (() => { drawPlotOnCanvas(getRValue()) })
+        value.onclick = (() => { drawPlotOnCanvas(validateAndGetROrNull()) })
     })
 }
 
 /**
  * @return {null|number}
  */
-function getRValue() {
-    if (validateRField()) {
-        for (const elem of rField) {
-            if (elem.checked) return parseFloat(elem.value);
-        }
-        return null;
+function validateAndGetROrNull() {
+    validateRField();
+    return getROrNull();
+}
+
+/**
+ * @return {null|number}
+ */
+function getROrNull() {
+    if (!rValid) return null;
+    for (const elem of rField) {
+        if (elem.checked) return parseFloat(elem.value);
     }
     return null;
+}
+
+function clearRField() {
+    rField.forEach(value => value.checked = false)
+    rField[0].parentElement.classList.remove("valid")
+    rValid = false;
 }
 
 /**
  * @return {boolean}
  */
 function validateRField() {
-    return validateNumberCheckboxField(rField);
+    rValid = validateNumberCheckboxField(rField);
+    return rValid;
 }
 
 /**
@@ -295,33 +368,9 @@ function makeValid(paragraph) {
     paragraph.classList.remove("invalid");
 }
 
-//
-// submitForm.on("submit", function (event) {
-//     event.preventDefault();
-//     validateForm();
-// })
-//
-// function validateForm() {
-//     if (validateFields()) {
-//         sendFormToServer();
-//     }
-// }
-//
-// function validateFields() {
-//     return validateXField() & validateYField() & validateRField();
-// }
-//
-// function validateXField() {
-//     return validateNumberTextField(xTextField, -3, 5);
-// }
-//
+function sendRequestToServer(xValue, yValue, rValue) {
 
-//
-// function validateRField() {
-//     return validateNumberTextField(rTextField, 0);
-// }
-//
-
+}
 
 // function sendFormToServer() {
 //     $.ajax({
@@ -370,45 +419,80 @@ function makeValid(paragraph) {
 //     historyTableContent.html(htmlTable.innerHTML);
 // }
 //
-// function clearForm() {
-//     xTextField.val("");
-//     yTextField.val("");
-//     rTextField.val("");
-//
-//     xTextField.removeClass("valid");
-//     yTextField.removeClass("valid");
-//     rTextField.removeClass("valid");
-// }
+
+/**
+ * @type {HTMLCanvasElement}
+ */
+const canvas = document.getElementById("plotCanvas");
+
+const {height, width} = canvas.getBoundingClientRect();
+if (width !== height) {
+    console.error("Plot is not a square");
+}
+
+const center = width / 2,
+    unit = width / 10,
+
+    axisWidth = width / 100,
+    axisWidthOffset = (axisWidth - 1) / 2,
+    axisMargin = width / 60,
+
+    arrowLength = width / 20,
+    arrowWidth = arrowLength / 3,
+
+    streakLengthOffset = axisWidth,
+    streakLength = 2 * streakLengthOffset + 1,
+    streakWidth = axisWidth,
+    streakWidthOffset = axisWidthOffset,
+
+    fontSize = width / 15,
+    fontSizeStr = "px",
+    fontFamily = "Comic Sans MS",
+    fontStr = fontSizeStr + " " + fontFamily,
+    fontXVerticalOffset = streakLength,
+    fontXHorizontalOffset = fontSize / 3,
+    fontYHorizontalOffset = streakLength,
+    fontYVerticalOffset = fontSize / 3,
+
+    xVerticalOffset = fontSize + arrowWidth,
+    yHorizontalOffset = arrowWidth * 4;
+
+let xPoint = null,
+    yPoint = null;
+const pointRoundParam = 1e2;
+
+/**
+ * @param {number|null} newValue
+ */
+function setXPoint(newValue) {
+    if (newValue == null) {
+        xPoint = newValue;
+    } else {
+        xPoint = Math.round(newValue * pointRoundParam) / pointRoundParam;
+    }
+}
+
+/**
+ * @param {number|null} newValue
+ */
+function setYPoint(newValue) {
+    if (newValue == null) {
+        yPoint = newValue;
+    } else {
+        yPoint = Math.round(newValue * pointRoundParam) / pointRoundParam;
+    }
+}
 
 drawPlotOnCanvas(null);
+
+function drawPlot() {
+    drawPlotOnCanvas(getROrNull())
+}
 
 /**
  * @param {number|null} rValue
  */
 function drawPlotOnCanvas(rValue) {
-    const canvas = document.getElementById("plotCanvas");
-    const {width, height} = canvas.getBoundingClientRect();
-    if (width !== height) {
-        return;
-    }
-    const center = width / 2,
-        unit = width / 10;
-    const axisWidth = width / 100,
-        axisWidthOffset = (axisWidth - 1) / 2,
-        axisMargin = width / 60;
-    const arrowLength = width / 20,
-        arrowWidth = arrowLength / 3;
-    const streakLengthOffset = axisWidth,
-        streakLength = 2 * streakLengthOffset + 1,
-        streakWidth = axisWidth,
-        streakWidthOffset = axisWidthOffset;
-    const fontSize = 14,
-        fontXVerticalOffset = streakLength,
-        fontXHorizontalOffset = fontSize / 3,
-        fontYHorizontalOffset = streakLength,
-        fontYVerticalOffset = fontSize / 3;
-    const xVerticalOffset = 1.6 * arrowLength,
-        yHorizontalOffset = 1.2 * arrowLength;
     if (canvas.getContext) {
         const ctx = canvas.getContext("2d");
 
@@ -470,7 +554,7 @@ function drawPlotOnCanvas(rValue) {
         ctx.fillRect(center - 4 * unit - streakWidthOffset, center - streakLengthOffset, streakWidth, streakLength);
 
         // text
-        ctx.font = fontSize + "pt Comic Sans MS";
+        ctx.font = fontSize + fontStr;
         ctx.fillText("-4", center - 4 * unit - fontXHorizontalOffset, center - fontXVerticalOffset);
         ctx.fillText("-3", center - 3 * unit - fontXHorizontalOffset, center - fontXVerticalOffset);
         ctx.fillText("-2", center - 2 * unit - fontXHorizontalOffset, center - fontXVerticalOffset);
@@ -491,6 +575,61 @@ function drawPlotOnCanvas(rValue) {
 
         ctx.fillText("X", width - fontSize - axisMargin, center + xVerticalOffset);
         ctx.fillText("Y", center - yHorizontalOffset, fontSize + axisMargin);
+
+        // red point
+        if (xPoint != null && yPoint != null) {
+            ctx.fillStyle = "red";
+            ctx.beginPath();
+            ctx.arc(center + unit * xPoint, center - unit * yPoint, streakWidth, 0, 2 * Math.PI, false);
+            ctx.fill();
+
+            ctx.font = (fontSize / 2) + fontStr;
+            ctx.fillText(" " + xPoint + ", " + yPoint + " ", center + unit * xPoint, center - unit * yPoint);
+        }
+    }
+}
+
+function getXCoordinateOrConvert(xOffset) {
+    let xValue = getXOrNull();
+    if (xValue == null) xValue = convertXValueInCoordinate(xOffset);
+    return xValue;
+}
+
+function convertXValueInCoordinate(xOffset) {
+    return (xOffset - center) / unit;
+}
+
+function getYCoordinateOrConvert(yOffset) {
+    let yValue = getYOrNull();
+    if (yValue == null) yValue = convertYValueInCoordinate(yOffset);
+    return yValue;
+}
+
+function convertYValueInCoordinate(yOffset) {
+    return - (yOffset - center) / unit;
+}
+
+canvas.onmousemove = (event) => {
+    const bound = canvas.getBoundingClientRect();
+    setXPoint(getXCoordinateOrConvert(event.x - bound.x));
+    setYPoint(getYCoordinateOrConvert(event.y - bound.y));
+    drawPlot();
+}
+
+canvas.onmouseleave = () => {
+    setXPoint(null);
+    setYPoint(null);
+    drawPlot();
+}
+
+canvas.onclick = () => {
+    const rValue = validateAndGetROrNull();
+    if (rValue) {
+        sendRequestToServer(xPoint,yPoint,rValue);
+        clearFields();
+    } else {
+        alert("To point here you must set R value!");
+        validateRField();
     }
 }
 
