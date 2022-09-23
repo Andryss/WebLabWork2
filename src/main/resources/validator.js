@@ -30,9 +30,9 @@ submitForm.onsubmit = function (event) {
     event.preventDefault();
     if (validateFields()) {
         sendRequestToServer(
-            validateAndGetXOrNull(),
-            validateAndGetYOrNull(),
-            validateAndGetROrNull()
+            getXOrNull(),
+            getYOrNull(),
+            getROrNull()
         );
         clearFields();
     }
@@ -448,14 +448,7 @@ const center = width / 2,
     fontSize = width / 15,
     fontSizeStr = "px",
     fontFamily = "Comic Sans MS",
-    fontStr = fontSizeStr + " " + fontFamily,
-    fontXVerticalOffset = streakLength,
-    fontXHorizontalOffset = fontSize / 3,
-    fontYHorizontalOffset = streakLength,
-    fontYVerticalOffset = fontSize / 3,
-
-    xVerticalOffset = fontSize + arrowWidth,
-    yHorizontalOffset = arrowWidth * 4;
+    fontStr = fontSizeStr + " " + fontFamily;
 
 let xPoint = null,
     yPoint = null;
@@ -553,28 +546,40 @@ function drawPlotOnCanvas(rValue) {
         ctx.fillRect(center - 3 * unit - streakWidthOffset, center - streakLengthOffset, streakWidth, streakLength);
         ctx.fillRect(center - 4 * unit - streakWidthOffset, center - streakLengthOffset, streakWidth, streakLength);
 
-        // text
+        // text OX
         ctx.font = fontSize + fontStr;
-        ctx.fillText("-4", center - 4 * unit - fontXHorizontalOffset, center - fontXVerticalOffset);
-        ctx.fillText("-3", center - 3 * unit - fontXHorizontalOffset, center - fontXVerticalOffset);
-        ctx.fillText("-2", center - 2 * unit - fontXHorizontalOffset, center - fontXVerticalOffset);
-        ctx.fillText("-1", center - unit - fontXHorizontalOffset, center - fontXVerticalOffset);
-        ctx.fillText("1", center + unit - fontXHorizontalOffset, center - fontXVerticalOffset);
-        ctx.fillText("2", center + 2 * unit - fontXHorizontalOffset, center - fontXVerticalOffset);
-        ctx.fillText("3", center + 3 * unit - fontXHorizontalOffset, center - fontXVerticalOffset);
-        ctx.fillText("4", center + 4 * unit - fontXHorizontalOffset, center - fontXVerticalOffset);
+        ctx.textAlign = "center";
+        ctx.textBaseline = "bottom";
+        ctx.fillText("-4", center - 4 * unit, center - streakWidth);
+        ctx.fillText("-3", center - 3 * unit, center - streakWidth);
+        ctx.fillText("-2", center - 2 * unit, center - streakWidth);
+        ctx.fillText("-1", center - unit, center - streakWidth);
+        ctx.fillText("1", center + unit, center - streakWidth);
+        ctx.fillText("2", center + 2 * unit, center - streakWidth);
+        ctx.fillText("3", center + 3 * unit, center - streakWidth);
+        ctx.fillText("4", center + 4 * unit, center - streakWidth);
 
-        ctx.fillText("-4", center + fontYHorizontalOffset, center + 4 * unit + fontYVerticalOffset);
-        ctx.fillText("-3", center + fontYHorizontalOffset, center + 3 * unit + fontYVerticalOffset);
-        ctx.fillText("-2", center + fontYHorizontalOffset, center + 2 * unit + fontYVerticalOffset);
-        ctx.fillText("-1", center + fontYHorizontalOffset, center + unit + fontYVerticalOffset);
-        ctx.fillText("1", center + fontYHorizontalOffset, center - unit + fontYVerticalOffset);
-        ctx.fillText("2", center + fontYHorizontalOffset, center - 2 * unit + fontYVerticalOffset);
-        ctx.fillText("3", center + fontYHorizontalOffset, center - 3 * unit + fontYVerticalOffset);
-        ctx.fillText("4", center + fontYHorizontalOffset, center - 4 * unit + fontYVerticalOffset);
+        // text OY
+        ctx.textAlign = "left";
+        ctx.textBaseline = "middle";
+        ctx.fillText("-4", center + streakLength, center + 4 * unit);
+        ctx.fillText("-3", center + streakLength, center + 3 * unit);
+        ctx.fillText("-2", center + streakLength, center + 2 * unit);
+        ctx.fillText("-1", center + streakLength, center + unit);
+        ctx.fillText("1", center + streakLength, center - unit);
+        ctx.fillText("2", center + streakLength, center - 2 * unit);
+        ctx.fillText("3", center + streakLength, center - 3 * unit);
+        ctx.fillText("4", center + streakLength, center - 4 * unit);
 
-        ctx.fillText("X", width - fontSize - axisMargin, center + xVerticalOffset);
-        ctx.fillText("Y", center - yHorizontalOffset, fontSize + axisMargin);
+        // X
+        ctx.textAlign = "left";
+        ctx.textBaseline = "top";
+        ctx.fillText("X", width - arrowLength - arrowWidth, center + arrowWidth * 2);
+
+        // Y
+        ctx.textAlign = "right";
+        ctx.textBaseline = "bottom";
+        ctx.fillText("Y", center - arrowWidth * 2, fontSize + arrowWidth);
 
         // red point
         if (xPoint != null && yPoint != null) {
@@ -583,7 +588,9 @@ function drawPlotOnCanvas(rValue) {
             ctx.arc(center + unit * xPoint, center - unit * yPoint, streakWidth, 0, 2 * Math.PI, false);
             ctx.fill();
 
-            ctx.font = (fontSize / 2) + fontStr;
+            ctx.font = (fontSize * 0.8) + fontStr;
+            ctx.textAlign = (xPoint > 0) ? "end" : "start";
+            ctx.textBaseline = (yPoint > 0) ? "top" : "bottom";
             ctx.fillText(" " + xPoint + ", " + yPoint + " ", center + unit * xPoint, center - unit * yPoint);
         }
     }
