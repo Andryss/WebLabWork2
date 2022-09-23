@@ -1,5 +1,16 @@
 "use strict"
 
+import {
+    validateNumberRadioField,
+    validateNumberCheckboxField,
+    validateNumberTextField,
+
+    clearNumberRadioField,
+    clearNumberTextField,
+    clearNumberCheckboxField
+}
+from "./validators.js";
+
 /**
  * @type {NodeListOf<HTMLInputElement>}
  */
@@ -15,7 +26,6 @@ const submitForm = document.getElementById("submitForm");
  */
 const historyTableContent = document.getElementById("historyTableContent");
 
-const numberPattern = /^((-?[1-9]\d*(\.\d+)?)|(0(\.\d+)?)|(-0\.\d+))$/
 
 /**
  * @type {boolean}
@@ -109,8 +119,8 @@ function getXOrNull() {
 }
 
 function clearXField() {
-    xField.forEach(value => value.checked = false)
-    xField[0].parentElement.classList.remove("valid")
+    xField.forEach(value => value.checked = false);
+    clearNumberRadioField(xField);
     xValid = false;
 }
 
@@ -120,66 +130,6 @@ function clearXField() {
 function validateXField() {
     xValid = validateNumberRadioField(xField)
     return xValid;
-}
-
-/**
- * @param {NodeListOf<HTMLInputElement>} radioButtons
- * @returns {boolean}
- */
-function validateNumberRadioField(radioButtons) {
-    if (isNotSelected(radioButtons)) return false;
-    if (isNotNumberSelected(radioButtons)) return false;
-    makeValid(radioButtons[0].parentElement); return true;
-}
-
-/**
- * @param {NodeListOf<HTMLInputElement>} radioButtons
- * @return {boolean}
- */
-function isNotSelected(radioButtons) {
-    if (isSelectedCountInRange(radioButtons, 0, 0)) {
-        makeInvalid(radioButtons[0].parentElement);
-        radioButtons[0].parentElement.classList.add("not-selected");
-        return true;
-    } else {
-        radioButtons[0].parentElement.classList.remove("not-selected");
-        return false
-    }
-}
-
-/**
- * @param {NodeListOf<HTMLInputElement>} radioButtons
- * @param {Number} low
- * @param {Number} high
- * @return {boolean}
- */
-function isSelectedCountInRange(radioButtons, low = null, high = null) {
-    console.assert(low != null || high != null);
-    if (low != null && high != null) console.assert(low <= high);
-    let count = 0;
-    radioButtons.forEach(value => { if (value.checked) count++ });
-    return !(low != null && count < low || high != null && count > high);
-}
-
-/**
- * @param {NodeListOf<HTMLInputElement>} radioButtons
- * @return {boolean}
- */
-function isNotNumberSelected(radioButtons) {
-    let onlyNumberSelect = true;
-    for (const elem of radioButtons) {
-        if (elem.checked && !(numberPattern.test(elem.value))) {
-            onlyNumberSelect = false; break;
-        }
-    }
-    if (!onlyNumberSelect) {
-        makeInvalid(radioButtons[0].parentElement);
-        radioButtons[0].parentElement.classList.add("not-a-number-selected");
-        return true;
-    } else {
-        radioButtons[0].parentElement.classList.remove("not-a-number-selected");
-        return false
-    }
 }
 
 
@@ -208,8 +158,8 @@ function getYOrNull() {
 }
 
 function clearYField() {
-    yField.forEach(value => value.value = "")
-    yField[0].parentElement.classList.remove("valid")
+    yField.forEach(value => value.value = "");
+    clearNumberTextField(yField[0]);
     yValid = false;
 }
 
@@ -219,70 +169,6 @@ function clearYField() {
 function validateYField() {
     yValid = validateNumberTextField(yField[0], -5, 3);
     return yValid;
-}
-
-/**
- * @param {HTMLInputElement} textField
- * @param {Number} low
- * @param {Number} high
- * @returns {boolean}
- */
-function validateNumberTextField(textField, low = null, high = null) {
-    if (isBlank(textField)) return false;
-    if (isNotNumber(textField)) return false;
-    if (isNotInRange(textField,low,high)) return false;
-    makeValid(textField.parentElement); return true;
-}
-
-/**
- * @param {HTMLInputElement} textField
- * @returns {boolean}
- */
-function isBlank(textField) {
-    if (textField.value === "") {
-        makeInvalid(textField.parentElement);
-        textField.parentElement.classList.add("blank");
-        return true;
-    } else {
-        textField.parentElement.classList.remove("blank");
-        return false;
-    }
-}
-
-/**
- * @param {HTMLInputElement} textField
- * @returns {boolean}
- */
-function isNotNumber(textField) {
-    if (!numberPattern.test(textField.value)) {
-        makeInvalid(textField.parentElement);
-        textField.parentElement.classList.add("not-a-number-entered");
-        return true;
-    } else {
-        textField.parentElement.classList.remove("not-a-number-entered");
-        return false;
-    }
-}
-
-/**
- * @param {HTMLInputElement} textField
- * @param {Number} low
- * @param {Number} high
- * @returns {boolean}
- */
-function isNotInRange(textField, low = null, high = null) {
-    console.assert(low != null || high != null);
-    if (low != null && high != null) console.assert(low <= high);
-    const value = parseFloat(textField.value);
-    console.assert(!isNaN(value));
-    if (low && value < low || high && value > high) {
-        makeInvalid(textField.parentElement);
-        textField.parentElement.classList.add("out-of-range");
-        return true;
-    } else {
-        textField.parentElement.classList.remove("out-of-range");
-        return false;
-    }
 }
 
 
@@ -313,8 +199,8 @@ function getROrNull() {
 }
 
 function clearRField() {
-    rField.forEach(value => value.checked = false)
-    rField[0].parentElement.classList.remove("valid")
+    rField.forEach(value => value.checked = false);
+    clearNumberCheckboxField(rField);
     rValid = false;
 }
 
@@ -326,47 +212,6 @@ function validateRField() {
     return rValid;
 }
 
-/**
- * @param {NodeListOf<HTMLInputElement>} checkBoxes
- * @return {boolean}
- */
-function validateNumberCheckboxField(checkBoxes) {
-    if (isNotSelected(checkBoxes)) return false; // the same as for radio button
-    if (isNotNumberSelected(checkBoxes)) return false; // the same as for radio button
-    if (isMoreThenOneSelected(checkBoxes)) return false;
-    makeValid(checkBoxes[0].parentElement); return true;
-}
-
-/**
- * @param {NodeListOf<HTMLInputElement>} checkBoxes
- * @return {boolean}
- */
-function isMoreThenOneSelected(checkBoxes) {
-    if (isSelectedCountInRange(checkBoxes, 2)) {
-        makeInvalid(checkBoxes[0].parentElement);
-        checkBoxes[0].parentElement.classList.add("more-then-one-selected");
-        return true;
-    } else {
-        checkBoxes[0].parentElement.classList.remove("more-then-one-selected");
-        return false
-    }
-}
-
-/**
- * @param {HTMLElement} paragraph
- */
-function makeInvalid(paragraph) {
-    paragraph.classList.add("invalid");
-    paragraph.classList.remove("valid");
-}
-
-/**
- * @param {HTMLElement} paragraph
- */
-function makeValid(paragraph) {
-    paragraph.classList.add("valid");
-    paragraph.classList.remove("invalid");
-}
 
 function sendRequestToServer(xValue, yValue, rValue) {
 
