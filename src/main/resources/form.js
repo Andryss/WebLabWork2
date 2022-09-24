@@ -61,7 +61,7 @@ function initializeFields() {
  * @return {boolean}
  */
 function validateFields() {
-    let valid = false;
+    let valid = true;
     valid = validateXField() && valid;
     valid = validateYField() && valid;
     valid = validateRField() && valid;
@@ -295,6 +295,11 @@ const center = width / 2,
     fontFamily = "Comic Sans MS",
     fontStr = fontSizeStr + " " + fontFamily;
 
+const xCol = 3,
+    yCol = 4,
+    rCol = 5,
+    resCol = 6;
+
 let xPoint = null,
     yPoint = null;
 const pointRoundParam = 1e2;
@@ -425,6 +430,20 @@ function drawPlotOnCanvas(rValue) {
         ctx.textAlign = "right";
         ctx.textBaseline = "bottom";
         ctx.fillText("Y", center - arrowWidth * 2, fontSize + arrowWidth);
+
+        // points from table
+        for (const row of historyTableContent.rows) {
+            const xValueCell = parseFloat(row.cells[xCol].innerText),
+                yValueCell = parseFloat(row.cells[yCol].innerText),
+                rValueCell = parseFloat(row.cells[rCol].innerText),
+                resCell = row.cells[resCol].innerText.toLowerCase();
+            if (!isNaN(xValueCell) && !isNaN(yValueCell) && !isNaN(rValueCell)) {
+                ctx.fillStyle = (rValueCell === rValue) ? ((resCell.includes("not")) ? "orange" : "green") : "grey";
+                ctx.beginPath();
+                ctx.arc(center + unit * xValueCell, center - unit * yValueCell, streakWidth * 1.5, 0, 2 * Math.PI, false);
+                ctx.fill();
+            }
+        }
 
         // red point
         if (xPoint != null && yPoint != null) {

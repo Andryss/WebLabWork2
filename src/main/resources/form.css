@@ -1,27 +1,13 @@
-* {
-    font-family: "Comic Sans MS", serif;
-}
+@import url(area_check.css);
 
-#cookieImage {
-    position: fixed;
-    right: 5px;
-    bottom: 5px;
-    cursor: pointer;
-}
-
+/*
+Main styles
+ */
 div.hat {
     font-family: sans-serif;
     color: #010101;
     font-size: 20px;
     background-color: #EDB88B;
-}
-
-div.outer {
-    border: 1px dashed black;
-    border-radius: 5px;
-    margin-left: 10%;
-    margin-right: 10%;
-    text-align: center;
 }
 
 canvas {
@@ -128,59 +114,4 @@ Error texts
 
 .more-then-one-selected > small::after {
     content: "select only one";
-}
-
-
-/*
-Table styles
- */
-
-table {
-    width: 100%;
-}
-
-thead {
-    background-color: #1AD8D5;
-}
-
-td {
-    text-align: center;
-}
-
-td.number-col {
-    width: 3%;
-}
-
-td.time-col {
-    width: 40%;
-}
-
-td.exec-time-col {
-    width: 15%;
-}
-
-td.x-col,
-td.y-col,
-td.r-col {
-    width: 10%;
-}
-
-td.result-col {
-    width: 12%;
-}
-
-tbody tr:nth-child(odd) {
-    background-color: #ecfffd;
-}
-
-tbody tr:nth-child(odd):hover {
-    background-color: #dbecea;
-}
-
-tbody tr:nth-child(even) {
-    background-color: #aafffc;
-}
-
-tbody tr:nth-child(even):hover {
-    background-color: #9dece9;
 }
