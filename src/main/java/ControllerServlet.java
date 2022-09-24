@@ -9,9 +9,12 @@ public class ControllerServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        if (req.getParameter("x") != null && req.getParameter("y") != null && req.getParameter("r") != null) {
+        try {
+            Double.parseDouble(req.getParameter("x"));
+            Double.parseDouble(req.getParameter("y"));
+            Double.parseDouble(req.getParameter("r"));
             getServletContext().getRequestDispatcher("/area_check").forward(req, resp);
-        } else {
+        } catch (NullPointerException | NumberFormatException e) {
             getServletContext().getRequestDispatcher("/form").forward(req, resp);
         }
     }
