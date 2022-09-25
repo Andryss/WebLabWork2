@@ -6,7 +6,7 @@
 <html lang="en">
 <head>
     <title>Form</title>
-    <link rel="stylesheet" type="text/css" href="form.css">
+    <link rel="stylesheet" type="text/css" href="style/form.css">
 </head>
 <body>
 <div class="hat outer">
@@ -85,8 +85,8 @@
         </tbody>
     </table>
 </div>
-<img id="cookieImage" src="cookie.png" alt="cute cookie">
+<img id="cookieImage" src="picture/cookie.png" alt="cute cookie">
 <!-- Мммм, спасибо ебаным инструкциям за type="module" -->
-<script type="module" src="form.js"></script>
+<script type="module" src="script/form.js"></script>
 </body>
 </html>

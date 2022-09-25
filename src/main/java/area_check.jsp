@@ -6,7 +6,7 @@
 <html lang="en">
 <head>
     <title>Result</title>
-    <link rel="stylesheet" type="text/css" href="area_check.css">
+    <link rel="stylesheet" type="text/css" href="style/area_check.css">
 </head>
 <body>
 <div class="outer">
@@ -41,7 +41,7 @@
 <div class="outer">
     <label>Want to test your luck again? Click </label><a href="${pageContext.request.contextPath}/">here</a>
 </div>
-<img id="cookieImage" src="cookie.png" alt="cute cookie">
-<script src="area_check.js"></script>
+<img id="cookieImage" src="picture/cookie.png" alt="cute cookie">
+<script src="script/area_check.js"></script>
 </body>
 </html>
