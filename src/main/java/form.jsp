@@ -1,11 +1,11 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<%@ page import="Request" %>
+<jsp:useBean id="history" scope="session" type="java.util.ArrayList<model.Response>"/>
 
 <html lang="en">
 <head>
-    <title>JSP page</title>
+    <title>Form</title>
     <link rel="stylesheet" type="text/css" href="form.css">
 </head>
 <body>
@@ -71,9 +71,16 @@
         </tr>
         </thead>
         <tbody id="historyTableContent">
-        <%--@elvariable id="history" type="java.util.Map"--%>
-        <c:forEach items="${history}" var="h">
-
+        <c:forEach items="${history}" var="resp">
+            <tr>
+                <td>${history.indexOf(resp) + 1}</td>
+                <td>${resp.responseTime}</td>
+                <td>${resp.executionTime}</td>
+                <td>${resp.x}</td>
+                <td>${resp.y}</td>
+                <td>${resp.r}</td>
+                <td>${resp.resultString}</td>
+            </tr>
         </c:forEach>
         </tbody>
     </table>

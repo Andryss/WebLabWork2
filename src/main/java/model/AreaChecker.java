@@ -1,4 +1,7 @@
+package model;
+
 public interface AreaChecker {
-    boolean check(double x, double y, double r);
+    boolean check(Request request);
+
     AreaChecker instance = new AreaCheckerImpl();
 }
