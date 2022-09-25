@@ -214,56 +214,9 @@ function validateRField() {
 
 
 function sendRequestToServer(xValue, yValue, rValue) {
-
+    alert("here");
+    window.location.href += "?x=" + xValue + "&y=" + yValue + "&r=" + rValue;
 }
-
-// function sendFormToServer() {
-//     $.ajax({
-//         type: "GET",
-//         url: "result.php",
-//         dataType: "json",
-//         data: {
-//             "xValue": xTextField.val(),
-//             "yValue": yTextField.val(),
-//             "rValue": rTextField.val(),
-//             "timezoneOffset": -(new Date().getTimezoneOffset())
-//         }
-//     }).done(function (res) {
-//         handleResponse(res);
-//     }).fail(function (msg, exception) {
-//         alert("Something wrong: " + msg.status + " " + exception);
-//     }).always(function () {
-//         clearForm();
-//     });
-// }
-//
-// function handleResponse(response) {
-//     const htmlTable = document.createElement("table");
-//     for (let i = 0; i < response.length; i++) {
-//         const element = response[i];
-//         if (element != null) {
-//             const htmlRow = document.createElement("tr");
-//             const numCol = document.createElement("td");
-//             numCol.append("" + (i + 1));
-//             htmlRow.appendChild(numCol);
-//             [
-//                 "time",
-//                 "executionTime",
-//                 "xValue",
-//                 "yValue",
-//                 "rValue",
-//                 "result"
-//             ].forEach((prop) => {
-//                 const col = document.createElement("td");
-//                 col.append(element[prop]);
-//                 htmlRow.appendChild(col);
-//             })
-//             htmlTable.appendChild(htmlRow);
-//         }
-//     }
-//     historyTableContent.html(htmlTable.innerHTML);
-// }
-//
 
 /**
  * @type {HTMLCanvasElement}

@@ -1,8 +1,6 @@
-<%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<jsp:useBean id="resp" scope="request" type="model.Response"/>
-
+<%@ page contentType="text/html;charset=UTF-8" %>
 <html lang="en">
 <head>
     <title>Result</title>
@@ -27,6 +25,7 @@
         </thead>
         <tbody id="historyTableContent">
         <tr>
+            <%--@elvariable id="resp" type="model.Response"--%>
             <td>#</td>
             <td>${resp.responseTime}</td>
             <td>${resp.executionTime}</td>

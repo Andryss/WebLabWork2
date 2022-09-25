@@ -17,6 +17,6 @@ public class FormServlet extends HttpServlet {
         if (session.getAttribute(historyAttrName) == null) {
             session.setAttribute(historyAttrName, HistoryManager.instance.getUserHistory(session));
         }
-        getServletContext().getRequestDispatcher("/form.jsp").forward(req, resp);
+        getServletContext().getRequestDispatcher("/form.jsp").include(req, resp);
     }
 }

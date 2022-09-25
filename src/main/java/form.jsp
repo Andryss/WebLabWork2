@@ -1,8 +1,6 @@
-<%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<jsp:useBean id="history" scope="session" type="java.util.ArrayList<model.Response>"/>
-
+<%@ page contentType="text/html;charset=UTF-8" %>
 <html lang="en">
 <head>
     <title>Form</title>
@@ -71,6 +69,7 @@
         </tr>
         </thead>
         <tbody id="historyTableContent">
+        <%--@elvariable id="history" type="java.util.List<model.Response>"--%>
         <c:forEach items="${history}" var="resp">
             <tr>
                 <td>${history.indexOf(resp) + 1}</td>
