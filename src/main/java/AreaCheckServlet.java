@@ -10,7 +10,7 @@ import java.io.IOException;
 
 public class AreaCheckServlet extends HttpServlet {
 
-    private static final String responseAttrName = "res";
+    private static final String responseAttrName = "resp";
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
@@ -20,7 +20,7 @@ public class AreaCheckServlet extends HttpServlet {
             y = Double.parseDouble(req.getParameter("y"));
             r = Double.parseDouble(req.getParameter("r"));
         } catch (NullPointerException | NumberFormatException e) {
-            getServletContext().getRequestDispatcher("/").forward(req, resp);
+            getServletContext().getRequestDispatcher("/index").forward(req, resp);
             return; // This return is useless. Just to know, that x, y, r are initialized
         }
         // If x, y, r are present, and they are instances of double

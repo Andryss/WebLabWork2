@@ -1,5 +1,8 @@
 package model;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
 public class Response {
     private final long responseTime = System.currentTimeMillis();
     private final long executionTime;
@@ -7,6 +10,8 @@ public class Response {
     private final double y;
     private final double r;
     private final boolean result;
+
+    private static final DateFormat formatter = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z");
 
     public Response(long executionTIme, Request request, boolean result) {
         this.executionTime = executionTIme;
@@ -18,6 +23,10 @@ public class Response {
 
     public long getResponseTime() {
         return responseTime;
+    }
+
+    public String getResponseTimeString() {
+        return formatter.format(responseTime);
     }
 
     public long getExecutionTime() {

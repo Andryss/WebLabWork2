@@ -1,5 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
+<jsp:useBean id="history" scope="request" type="java.util.List<model.Response>"/>
+
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html lang="en">
 <head>
@@ -29,6 +31,7 @@
             <input id="xRadio3" type="radio" name="xValue" value="3"><label for="xRadio3">3</label>
             <input id="xRadio4" type="radio" name="xValue" value="4"><label for="xRadio4">4</label>
             <input id="xRadio5" type="radio" name="xValue" value="5"><label for="xRadio5">5</label>
+            <input id="xRadioBigStripedFly" type="radio" name="xValue" value="Big striped fly"><label for="xRadioBigStripedFly">Big striped fly</label>
             <small class="error-text"></small>
         </p>
         <p id="yField">
@@ -69,16 +72,22 @@
         </tr>
         </thead>
         <tbody id="historyTableContent">
-        <%--@elvariable id="history" type="java.util.List<model.Response>"--%>
         <c:forEach items="${history}" var="resp">
             <tr>
                 <td>${history.indexOf(resp) + 1}</td>
-                <td>${resp.responseTime}</td>
-                <td>${resp.executionTime}</td>
+                <td>${resp.responseTimeString}</td>
+                <td>${resp.executionTime} ms</td>
                 <td>${resp.x}</td>
                 <td>${resp.y}</td>
                 <td>${resp.r}</td>
-                <td>${resp.resultString}</td>
+                <c:choose>
+                    <c:when test="${resp.result}">
+                        <td class="positive-result">${resp.resultString}</td>
+                    </c:when>
+                    <c:otherwise>
+                        <td class="negative-result">${resp.resultString}</td>
+                    </c:otherwise>
+                </c:choose>
             </tr>
         </c:forEach>
         </tbody>

@@ -1,17 +1,4 @@
-/*
-Main styles
- */
-* {
-    font-family: "Comic Sans MS", serif;
-}
-
-div.outer {
-    border: 1px dashed black;
-    border-radius: 5px;
-    margin: 20px 10%;
-    text-align: center;
-}
-
+@import url(index.css);
 
 /*
 Table styles
@@ -54,25 +41,19 @@ tbody tr:nth-child(odd) {
     background-color: #ecfffd;
 }
 
-tbody tr:nth-child(odd):hover {
-    background-color: #dbecea;
-}
-
 tbody tr:nth-child(even) {
     background-color: #aafffc;
 }
 
-tbody tr:nth-child(even):hover {
-    background-color: #9dece9;
-}
 
 
 /*
-Cookie
+Text styles
  */
-#cookieImage {
-    position: fixed;
-    right: 5px;
-    bottom: 5px;
-    cursor: pointer;
+td.positive-result {
+    color: green;
+}
+
+td.negative-result {
+    color: red;
 }

@@ -13,10 +13,11 @@ public class FormServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        HttpSession session = req.getSession();
-        if (session.getAttribute(historyAttrName) == null) {
-            session.setAttribute(historyAttrName, HistoryManager.instance.getUserHistory(session));
-        }
+//        HttpSession session = req.getSession();
+//        if (session.getAttribute(historyAttrName) == null) {
+//            session.setAttribute(historyAttrName, HistoryManager.instance.getUserHistory(session));
+//        }
+        req.setAttribute(historyAttrName, HistoryManager.instance.getUserHistory(req.getSession()));
         getServletContext().getRequestDispatcher("/form.jsp").include(req, resp);
     }
 }

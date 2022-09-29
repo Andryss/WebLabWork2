@@ -1,5 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
+<jsp:useBean id="resp" scope="request" type="model.Response"/> <!-- the scope can be "session", but it sucks -->
+
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html lang="en">
 <head>
@@ -25,20 +27,36 @@
         </thead>
         <tbody id="historyTableContent">
         <tr>
-            <%--@elvariable id="resp" type="model.Response"--%>
             <td>#</td>
-            <td>${resp.responseTime}</td>
-            <td>${resp.executionTime}</td>
+            <td>${resp.responseTimeString}</td>
+            <td>${resp.executionTime} ms</td>
             <td>${resp.x}</td>
             <td>${resp.y}</td>
             <td>${resp.r}</td>
-            <td>${resp.resultString}</td>
+            <c:choose>
+                <c:when test="${resp.result}">
+                    <td class="positive-result">${resp.resultString}</td>
+                </c:when>
+                <c:otherwise>
+                    <td class="negative-result">${resp.resultString}</td>
+                </c:otherwise>
+            </c:choose>
         </tr>
         </tbody>
     </table>
 </div>
 <div class="outer">
-    <label>Want to test your luck again? Click </label><a href="${pageContext.request.contextPath}/">here</a>
+    <c:choose>
+        <c:when test="${resp.result}">
+            <img class="result" src="picture/on-win.gif" alt="Congratulations!">
+        </c:when>
+        <c:otherwise>
+            <img class="result" src="picture/on-lose.gif" alt="No time to cry!">
+        </c:otherwise>
+    </c:choose>
+</div>
+<div class="outer">
+    <p>Want to test your luck again? Click <a href="${pageContext.request.contextPath}/index">here</a></p>
 </div>
 <img id="cookieImage" src="picture/cookie.png" alt="cute cookie">
 <script src="script/area_check.js"></script>

@@ -115,3 +115,16 @@ Error texts
 .more-then-one-selected > small::after {
     content: "select only one";
 }
+
+
+
+/*
+Table styles
+ */
+tbody tr:nth-child(odd):hover {
+    background-color: #dbecea;
+}
+
+tbody tr:nth-child(even):hover {
+    background-color: #9dece9;
+}

@@ -21,10 +21,6 @@ const xField = document.getElementsByName("xValue"),
  * @type {HTMLFormElement}
  */
 const submitForm = document.getElementById("submitForm");
-/**
- * @type {HTMLTableSectionElement}
- */
-const historyTableContent = document.getElementById("historyTableContent");
 
 
 /**
@@ -214,8 +210,28 @@ function validateRField() {
 
 
 function sendRequestToServer(xValue, yValue, rValue) {
-    alert("here");
-    window.location.href += "?x=" + xValue + "&y=" + yValue + "&r=" + rValue;
+    window.location.href = "/index?x=" + xValue + "&y=" + yValue + "&r=" + rValue;
+}
+
+
+/**
+ * @type {HTMLTableSectionElement}
+ */
+const historyTableContent = document.getElementById("historyTableContent");
+/**
+ * @type {HTMLTableRowElement|null}
+ */
+let hoveringRow = null
+
+for (let row of historyTableContent.rows) {
+    row.onmouseenter = function () {
+        hoveringRow = row;
+        drawPlot();
+    }
+    row.onmouseleave = function () {
+        hoveringRow = null;
+        drawPlot();
+    }
 }
 
 /**
@@ -393,7 +409,8 @@ function drawPlotOnCanvas(rValue) {
             if (!isNaN(xValueCell) && !isNaN(yValueCell) && !isNaN(rValueCell)) {
                 ctx.fillStyle = (rValueCell === rValue) ? ((resCell.includes("not")) ? "orange" : "green") : "grey";
                 ctx.beginPath();
-                ctx.arc(center + unit * xValueCell, center - unit * yValueCell, streakWidth * 1.5, 0, 2 * Math.PI, false);
+                const pointScale = (row === hoveringRow) ? 1.5 : 1;
+                ctx.arc(center + unit * xValueCell, center - unit * yValueCell, streakWidth * 1.5 * pointScale, 0, 2 * Math.PI, false);
                 ctx.fill();
             }
         }

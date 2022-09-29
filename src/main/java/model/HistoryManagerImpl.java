@@ -20,7 +20,7 @@ public class HistoryManagerImpl implements HistoryManager {
 
     @Override
     public Response addUserRequest(HttpSession user, Request request) {
-        LinkedList<Response> responses = histories.computeIfAbsent(user, (u) -> new LinkedList<>());
+        LinkedList<Response> responses = getUserHistory0(user);
         responses.addFirst(createResponse(request));
         while (responses.size() > maxUserLength) responses.removeLast();
         return responses.getFirst();
@@ -35,6 +35,10 @@ public class HistoryManagerImpl implements HistoryManager {
 
     @Override
     public List<Response> getUserHistory(HttpSession user) {
-        return histories.get(user);
+        return getUserHistory0(user);
+    }
+
+    private LinkedList<Response> getUserHistory0(HttpSession user) {
+        return histories.computeIfAbsent(user, (u) -> new LinkedList<>());
     }
 }
