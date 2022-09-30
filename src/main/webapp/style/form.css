@@ -15,6 +15,7 @@ canvas {
 }
 
 
+
 /*
 Field styles
  */
@@ -89,31 +90,32 @@ input[type="checkbox"]:checked {
 }
 
 
+
 /*
 Error texts
  */
-.not-selected > small::after {
-    content: "field must be selected";
+.more-then-one-selected > small::after {
+    content: "select only one";
 }
 
 .not-a-number-selected > small::after {
-    content: "select the number";
+    content: "select only the number";
 }
 
-#yField.out-of-range > small::after {
-    content: "y must be in range (-5...3)";
+.not-selected > small::after {
+    content: "field must be selected";
 }
 
 .not-a-number-entered > small::after {
     content: "enter the number";
 }
 
-.blank > small::after {
-    content: "field can't be blank";
+#yField.out-of-range > small::after {
+    content: "y must be in range (-5...3)";
 }
 
-.more-then-one-selected > small::after {
-    content: "select only one";
+.blank > small::after {
+    content: "field can't be blank";
 }
 
 

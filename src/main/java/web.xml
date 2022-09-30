@@ -23,6 +23,10 @@
         <servlet-name>FormServlet</servlet-name>
         <servlet-class>FormServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>EasterEgg</servlet-name>
+        <jsp-file>/easter_egg.jsp</jsp-file>
+    </servlet>
 
 
     <servlet-mapping>
@@ -36,6 +40,10 @@
     <servlet-mapping>
         <servlet-name>FormServlet</servlet-name>
         <url-pattern>/form</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>EasterEgg</servlet-name>
+        <url-pattern>/easter_egg</url-pattern>
     </servlet-mapping>
 
 </web-app>

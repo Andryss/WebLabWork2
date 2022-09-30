@@ -42,6 +42,7 @@ submitForm.onsubmit = function (event) {
         );
         clearFields();
     }
+    checkEasterEgg();
 }
 
 
@@ -69,6 +70,17 @@ function clearFields() {
     clearYField();
     clearRField();
     drawPlotOnCanvas(null);
+}
+
+
+const easterEggString = "Big striped fly"
+function checkEasterEgg() {
+    if (forcedGetX() === forcedGetY() &&
+        forcedGetY() === forcedGetR() &&
+        forcedGetR() === easterEggString) {
+        window.location.href = "/easter_egg";
+        clearFields();
+    }
 }
 
 
@@ -114,6 +126,21 @@ function getXOrNull() {
     return null;
 }
 
+/**
+ * @return {string|null}
+ */
+function forcedGetX() {
+    let checkedCount = 0
+    let checkedValue = null;
+    for (let elem of xField) {
+        if (elem.checked) {
+            checkedCount++;
+            checkedValue = elem.value;
+        }
+    }
+    return (checkedCount === 1) ? checkedValue : null;
+}
+
 function clearXField() {
     xField.forEach(value => value.checked = false);
     clearNumberRadioField(xField);
@@ -151,6 +178,13 @@ function validateAndGetYOrNull() {
 function getYOrNull() {
     if (!yValid) return null;
     return parseFloat(yField[0].value);
+}
+
+/**
+ * @return {string}
+ */
+function forcedGetY() {
+    return yField[0].value;
 }
 
 function clearYField() {
@@ -192,6 +226,21 @@ function getROrNull() {
         if (elem.checked) return parseFloat(elem.value);
     }
     return null;
+}
+
+/**
+ * @return {string|null}
+ */
+function forcedGetR() {
+    let checkedCount = 0
+    let checkedValue = null;
+    for (let elem of rField) {
+        if (elem.checked) {
+            checkedCount++;
+            checkedValue = elem.value;
+        }
+    }
+    return (checkedCount === 1) ? checkedValue : null;
 }
 
 function clearRField() {

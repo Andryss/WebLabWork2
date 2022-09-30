@@ -38,7 +38,7 @@
             <label>Y: </label>
             <input id="yTextField" name="yValue" type="text"
                    title="Y coordinate (-5 &#8804; Y &#8804; 3)"
-                   placeholder="-5 &#8804; Y &#8804; 3" maxlength="10">
+                   placeholder="-5 &#8804; Y &#8804; 3" maxlength="15">
             <small class="error-text"></small>
         </p>
         <p id="rField">
@@ -48,6 +48,7 @@
             <input id="rCheckBox3" type="checkbox" name="rValue" value="3"><label for="rCheckBox3">3</label>
             <input id="rCheckBox4" type="checkbox" name="rValue" value="4"><label for="rCheckBox4">4</label>
             <input id="rCheckBox5" type="checkbox" name="rValue" value="5"><label for="rCheckBox5">5</label>
+            <input id="rCheckBoxBigStripedFly" type="checkbox" name="rValue" value="Big striped fly"><label for="rCheckBoxBigStripedFly">Big striped fly</label>
             <small class="error-text"></small>
         </p>
         <p>
