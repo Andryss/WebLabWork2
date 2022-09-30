@@ -42,7 +42,6 @@ submitForm.onsubmit = function (event) {
         );
         clearFields();
     }
-    checkEasterEgg();
 }
 
 
@@ -70,17 +69,6 @@ function clearFields() {
     clearYField();
     clearRField();
     drawPlotOnCanvas(null);
-}
-
-
-const easterEggString = "Big striped fly"
-function checkEasterEgg() {
-    if (forcedGetX() === forcedGetY() &&
-        forcedGetY() === forcedGetR() &&
-        forcedGetR() === easterEggString) {
-        window.location.href = "/easter_egg";
-        clearFields();
-    }
 }
 
 
@@ -524,7 +512,17 @@ canvas.onclick = () => {
 }
 
 
-document.getElementById("cookieImage").onclick = function () {
+
+document.getElementById("submitButton").onclick = () => {
+    if (forcedGetX() === forcedGetY() &&
+        forcedGetY() === forcedGetR() &&
+        forcedGetR() === "Big striped fly") {
+        window.location.href = "/easter_egg";
+        clearFields();
+    }
+}
+
+document.getElementById("cookieImage").onclick = () => {
     if (Math.random() > 0.2) {
         alert("This site uses cookies, but you are not asked :>");
     } else {

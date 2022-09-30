@@ -13,10 +13,10 @@
 </div>
 <div class="outer">
     <div>
-        <img id="pepe-dance" src="picture/pepe-dance.gif" alt="best dance in the world">
+        <img id="pepe-dance" src="picture/welcome.gif" alt="best dance in the world">
     </div>
     <div>
-        <audio controls src="audio/pepe-dance.mp3"></audio>
+        <audio controls src="audio/welcome.mp3"></audio>
     </div>
 </div>
 <div class="outer">

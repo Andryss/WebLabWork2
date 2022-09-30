@@ -14,7 +14,7 @@
     <h2>You found it!</h2>
 </div>
 <div class="outer">
-    <a href="${pageContext.request.contextPath}/form">Celebrate the find</a>
+    <a href="${pageContext.request.contextPath}/index">Celebrate!!!</a>
 </div>
 </body>
 </html>
