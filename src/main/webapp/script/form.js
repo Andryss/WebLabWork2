@@ -35,7 +35,7 @@ let xValid = false,
 submitForm.onsubmit = function (event) {
     event.preventDefault();
     if (validateFields()) {
-        sendRequestToServer(
+        sendRequestToServerWithParameters(
             getXOrNull(),
             getYOrNull(),
             getROrNull()
@@ -246,7 +246,7 @@ function validateRField() {
 }
 
 
-function sendRequestToServer(xValue, yValue, rValue) {
+function sendRequestToServerWithParameters(xValue, yValue, rValue) {
     window.location.href = "/index?x=" + xValue + "&y=" + yValue + "&r=" + rValue;
 }
 
@@ -503,7 +503,7 @@ canvas.onmouseleave = () => {
 canvas.onclick = () => {
     const rValue = validateAndGetROrNull();
     if (rValue) {
-        sendRequestToServer(xPoint,yPoint,rValue);
+        sendRequestToServerWithParameters(xPoint,yPoint,rValue);
         clearFields();
     } else {
         alert("To point here you must set R value!");
@@ -514,10 +514,11 @@ canvas.onclick = () => {
 
 
 document.getElementById("submitButton").onclick = () => {
-    if (forcedGetX() === forcedGetY() &&
-        forcedGetY() === forcedGetR() &&
-        forcedGetR() === "Big striped fly") {
-        window.location.href = "/easter_egg";
+    const xVal = forcedGetX(),
+        yVal = forcedGetY(),
+        rVal = forcedGetR();
+    if (xVal === yVal && yVal === rVal && rVal === "Big striped fly") {
+        sendRequestToServerWithParameters(xVal, yVal, rVal);
         clearFields();
     }
 }
