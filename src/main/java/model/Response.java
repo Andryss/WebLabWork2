@@ -2,6 +2,7 @@ package model;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 public class Response {
     private final long responseTime = System.currentTimeMillis();
@@ -11,7 +12,7 @@ public class Response {
     private final double r;
     private final boolean result;
 
-    private static final DateFormat formatter = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z");
+    private static final DateFormat formatter = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z", Locale.ENGLISH);
 
     public Response(long executionTIme, Request request, boolean result) {
         this.executionTime = executionTIme;

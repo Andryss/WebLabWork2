@@ -11,6 +11,18 @@ import {
 }
 from "./validators.js";
 
+import {
+    getRadioNumberValue,
+    forcedGetRadioValue,
+
+    getTextNumberValue,
+    forcedGetTextValue,
+
+    getCheckboxNumberValue,
+    forcedGetCheckboxValue
+}
+from "./getters.js";
+
 /**
  * @type {NodeListOf<HTMLInputElement>}
  */
@@ -36,16 +48,16 @@ submitForm.onsubmit = function (event) {
     event.preventDefault();
     if (validateFields()) {
         sendRequestToServerWithParameters(
-            getXOrNull(),
-            getYOrNull(),
-            getROrNull()
+            getXValueOrNull(),
+            getYValueOrNull(),
+            getRValueOrNull()
         );
         clearFields();
     }
 }
 
 
-initializeFields()
+initializeFields();
 
 function initializeFields() {
     initializeXField();
@@ -74,6 +86,7 @@ function clearFields() {
 
 
 function initializeXField() {
+    // difficult block "how to make radio button unclickable"
     xField.forEach(value => {
         value.onmousedown = () => {
             if (value.checked) {
@@ -88,45 +101,33 @@ function initializeXField() {
             }
         }
         value.onclick = () => {
-            setTimeout(() => {
-                validateXField()
-            }, 0)
+            setTimeout(() => { validateXField() }, 0)
         }
     });
 }
 
+// noinspection JSUnusedLocalSymbols
 /**
  * @return {null|number}
  */
-function validateAndGetXOrNull() {
-    validateXField()
-    return getXOrNull();
+function validateAndGetXValueOrNull() {
+    validateXField();
+    return getXValueOrNull();
 }
 
 /**
  * @return {null|number}
  */
-function getXOrNull() {
+function getXValueOrNull() {
     if (!xValid) return null;
-    for (let elem of xField) {
-        if (elem.checked) return parseFloat(elem.value);
-    }
-    return null;
+    return getRadioNumberValue(xField);
 }
 
 /**
  * @return {string|null}
  */
 function forcedGetX() {
-    let checkedCount = 0
-    let checkedValue = null;
-    for (let elem of xField) {
-        if (elem.checked) {
-            checkedCount++;
-            checkedValue = elem.value;
-        }
-    }
-    return (checkedCount === 1) ? checkedValue : null;
+    return forcedGetRadioValue(xField);
 }
 
 function clearXField() {
@@ -147,37 +148,38 @@ function validateXField() {
 
 function initializeYField() {
     yField.forEach(element => {
-        element.onkeyup = (() => { validateYField() });
-        element.onkeydown = (() => { validateYField() });
+        element.onkeyup = validateYField;
+        element.onkeydown = validateYField;
     })
 }
 
+// noinspection JSUnusedLocalSymbols
 /**
  * @return {number|null}
  */
-function validateAndGetYOrNull() {
+function validateAndGetYValueOrNull() {
     validateYField();
-    return getYOrNull();
+    return getYValueOrNull();
 }
 
 /**
  * @return {null|number}
  */
-function getYOrNull() {
+function getYValueOrNull() {
     if (!yValid) return null;
-    return parseFloat(yField[0].value);
+    return getTextNumberValue(yField);
 }
 
 /**
  * @return {string}
  */
 function forcedGetY() {
-    return yField[0].value;
+    return forcedGetTextValue(yField);
 }
 
 function clearYField() {
     yField.forEach(value => value.value = "");
-    clearNumberTextField(yField[0]);
+    clearNumberTextField(yField);
     yValid = false;
 }
 
@@ -185,7 +187,7 @@ function clearYField() {
  * @return {boolean}
  */
 function validateYField() {
-    yValid = validateNumberTextField(yField[0], -5, 3);
+    yValid = validateNumberTextField(yField, -5, 3);
     return yValid;
 }
 
@@ -193,42 +195,31 @@ function validateYField() {
 
 function initializeRField() {
     rField.forEach(value => {
-        value.onclick = (() => { drawPlotOnCanvas(validateAndGetROrNull()) })
+        value.onclick = (() => { drawPlotOnCanvas(validateAndGetRValueOrNull()) })
     })
 }
 
 /**
  * @return {null|number}
  */
-function validateAndGetROrNull() {
+function validateAndGetRValueOrNull() {
     validateRField();
-    return getROrNull();
+    return getRValueOrNull();
 }
 
 /**
  * @return {null|number}
  */
-function getROrNull() {
+function getRValueOrNull() {
     if (!rValid) return null;
-    for (const elem of rField) {
-        if (elem.checked) return parseFloat(elem.value);
-    }
-    return null;
+    return getCheckboxNumberValue(rField);
 }
 
 /**
  * @return {string|null}
  */
 function forcedGetR() {
-    let checkedCount = 0
-    let checkedValue = null;
-    for (let elem of rField) {
-        if (elem.checked) {
-            checkedCount++;
-            checkedValue = elem.value;
-        }
-    }
-    return (checkedCount === 1) ? checkedValue : null;
+    return forcedGetCheckboxValue(rField);
 }
 
 function clearRField() {
@@ -246,9 +237,11 @@ function validateRField() {
 }
 
 
+
 function sendRequestToServerWithParameters(xValue, yValue, rValue) {
     window.location.href = "/index?x=" + xValue + "&y=" + yValue + "&r=" + rValue;
 }
+
 
 
 /**
@@ -335,7 +328,7 @@ function setYPoint(newValue) {
 drawPlotOnCanvas(null);
 
 function drawPlot() {
-    drawPlotOnCanvas(getROrNull())
+    drawPlotOnCanvas(getRValueOrNull())
 }
 
 /**
@@ -467,22 +460,38 @@ function drawPlotOnCanvas(rValue) {
     }
 }
 
+/**
+ * @param {number} xOffset
+ * @return {number}
+ */
 function getXCoordinateOrConvert(xOffset) {
-    let xValue = getXOrNull();
+    let xValue = getXValueOrNull();
     if (xValue == null) xValue = convertXValueInCoordinate(xOffset);
     return xValue;
 }
 
+/**
+ * @param {number} xOffset
+ * @return {number}
+ */
 function convertXValueInCoordinate(xOffset) {
     return (xOffset - center) / unit;
 }
 
+/**
+ * @param {number} yOffset
+ * @return {number}
+ */
 function getYCoordinateOrConvert(yOffset) {
-    let yValue = getYOrNull();
+    let yValue = getYValueOrNull();
     if (yValue == null) yValue = convertYValueInCoordinate(yOffset);
     return yValue;
 }
 
+/**
+ * @param {number} yOffset
+ * @return {number}
+ */
 function convertYValueInCoordinate(yOffset) {
     return - (yOffset - center) / unit;
 }
@@ -501,7 +510,7 @@ canvas.onmouseleave = () => {
 }
 
 canvas.onclick = () => {
-    const rValue = validateAndGetROrNull();
+    const rValue = validateAndGetRValueOrNull();
     if (rValue) {
         sendRequestToServerWithParameters(xPoint,yPoint,rValue);
         clearFields();

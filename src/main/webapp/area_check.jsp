@@ -1,6 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<jsp:useBean id="resp" scope="request" type="model.Response"/> <!-- the scope can be "session", but it sucks -->
+<jsp:useBean id="resp" scope="request" type="model.Response"/> <%-- the scope can be "session", but it sucks --%>
 
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html lang="en">

@@ -35,3 +35,7 @@ public class ControllerServlet extends HttpServlet {
         }
     }
 }
+
+/*
+ssh -L 8080:localhost:33880 s335155@helios.se.ifmo.ru -p 2222
+ */

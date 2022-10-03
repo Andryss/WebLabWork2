@@ -78,29 +78,31 @@ function isNotNumberSelected(radioButtons) {
     }
 }
 
+
 /*
 Text field validation
  */
 
 /**
- * @param {HTMLInputElement} textField
+ * @param {NodeListOf<HTMLInputElement>} textFields
  * @param {Number} low
  * @param {Number} high
  * @returns {boolean}
  */
-function validateNumberTextField(textField, low = null, high = null) {
-    if (isBlank(textField)) return false;
-    if (isNotNumber(textField)) return false;
-    if (isNotInRange(textField, low, high)) return false;
-    makeValid(textField);
+function validateNumberTextField(textFields, low = null, high = null) {
+    if (isBlank(textFields)) return false;
+    if (isNotNumber(textFields)) return false;
+    if (isNotInRange(textFields, low, high)) return false;
+    makeListValid(textFields);
     return true;
 }
 
 /**
- * @param {HTMLInputElement} textField
+ * @param {NodeListOf<HTMLInputElement>} textFields
  * @returns {boolean}
  */
-function isBlank(textField) {
+function isBlank(textFields) {
+    const textField = textFields[0];
     if (textField.value === "") {
         makeInvalid(textField);
         parentElementAddClass(textField, "blank");
@@ -112,10 +114,11 @@ function isBlank(textField) {
 }
 
 /**
- * @param {HTMLInputElement} textField
+ * @param {NodeListOf<HTMLInputElement>} textFields
  * @returns {boolean}
  */
-function isNotNumber(textField) {
+function isNotNumber(textFields) {
+    const textField = textFields[0];
     if (!numberPattern.test(textField.value)) {
         makeInvalid(textField);
         parentElementAddClass(textField, "not-a-number-entered");
@@ -127,12 +130,13 @@ function isNotNumber(textField) {
 }
 
 /**
- * @param {HTMLInputElement} textField
+ * @param {NodeListOf<HTMLInputElement>} textFields
  * @param {Number} low
  * @param {Number} high
  * @returns {boolean}
  */
-function isNotInRange(textField, low = null, high = null) {
+function isNotInRange(textFields, low = null, high = null) {
+    const textField = textFields[0];
     console.assert(low != null || high != null);
     if (low != null && high != null) console.assert(low <= high);
     const value = parseFloat(textField.value);
@@ -146,6 +150,7 @@ function isNotInRange(textField, low = null, high = null) {
         return false;
     }
 }
+
 
 /*
 Checkbox validation
@@ -178,6 +183,7 @@ function isMoreThenOneSelected(checkBoxes) {
     }
 }
 
+
 /*
 Clear functions
  */
@@ -189,10 +195,10 @@ function clearNumberRadioField(radioButtons) {
 }
 
 /**
- * @param {HTMLInputElement} textField
+ * @param {NodeListOf<HTMLInputElement>} textFields
  */
-function clearNumberTextField(textField) {
-    parentElementRemoveClass(textField, "valid");
+function clearNumberTextField(textFields) {
+    parentElementRemoveClassList(textFields, "valid");
 }
 
 /**
@@ -201,6 +207,7 @@ function clearNumberTextField(textField) {
 function clearNumberCheckboxField(checkBoxes) {
     parentElementRemoveClassList(checkBoxes, "valid")
 }
+
 
 /*
 Util functions
@@ -268,9 +275,11 @@ function makeListValid(nodeList) {
     makeValid(nodeList[0]);
 }
 
+
 /*
 Available exports
  */
+
 export {
     validateNumberRadioField,
     validateNumberTextField,
